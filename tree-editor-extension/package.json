@@ -1,0 +1,33 @@
+{
+  "name": "tree-editor-extension",
+  "keywords": [
+    "theia-extension"
+  ],
+  "version": "1.0.0",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "dependencies": {
+    "@jsonforms/core": "^2.0.2",
+    "@jsonforms/react": "^2.0.2",
+    "@jsonforms/editor": "^2.0.2",
+    "@jsonforms/material-renderers": "^2.0.2",
+    "@theia/core": "latest"
+  },
+  "devDependencies": {
+    "rimraf": "latest",
+    "typescript": "latest"
+  },
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/tree-editor-frontend-module"
+    }
+  ]
+}
