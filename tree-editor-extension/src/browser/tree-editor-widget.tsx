@@ -3,13 +3,11 @@ import { Message } from '@theia/core/lib/browser';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import App from './App';
-
 
 let num = 0;
 export class TreeEditorWidget extends Widget {
 
-  constructor(store) {
+  constructor(store, EditorComponent) {
     super();
     num++;
     this.id = `react-app-${num}`;
@@ -17,7 +15,7 @@ export class TreeEditorWidget extends Widget {
 
     ReactDOM.render(
       <Provider store={store}>
-        <App />
+        <EditorComponent />
       </Provider>,
       this.node);
   }

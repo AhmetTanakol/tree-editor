@@ -5,6 +5,7 @@ import { TreeEditorWidget } from './tree-editor-widget';
 import { unmanaged, inject, injectable } from "inversify";
 import { Actions, getSchema } from '@jsonforms/core';
 import * as AJV from 'ajv';
+import * as React from 'react';
 
 const ajv = new AJV({allErrors: true, verbose: true});
 
@@ -15,7 +16,8 @@ export class TreeEditorOpenHandler implements OpenHandler {
   constructor( @inject(FrontendApplication) private app: FrontendApplication,
                @inject(SelectionService) readonly selectionService: SelectionService,
                @inject(ResourceProvider) private readonly resourceProvider: ResourceProvider,
-               @unmanaged() store: any) {
+               @unmanaged() store: any,
+               @unmanaged() protected EditorComponent: React.Component) {
     this.store =  store;
   }
 
@@ -42,17 +44,17 @@ export class TreeEditorOpenHandler implements OpenHandler {
         let parsedContent = {};
         try {
           parsedContent = JSON.parse(content);
-        } catch {
-          console.warn('Invalid content');
+        } catch (err) {
+          console.warn('Invalid content', err);
         }
         const self = this;
-        Promise.resolve(this.store).then(function(initializedStore) {
+        Promise.resolve(this.store).then(initializedStore => {
           const valid = ajv.validate(getSchema(initializedStore.getState()), parsedContent);
           if (!valid) {
             parsedContent = {};
           }
           initializedStore.dispatch(Actions.update('', () => parsedContent));
-          const treeEditor = new TreeEditorWidget(initializedStore);
+          const treeEditor = new TreeEditorWidget(initializedStore, this.EditorComponent);
           treeEditor.title.caption = uri.path.base;
           treeEditor.title.label = uri.path.base;
           treeEditor.title.closable = true;
